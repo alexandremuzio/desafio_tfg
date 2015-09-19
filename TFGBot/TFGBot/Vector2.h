@@ -11,7 +11,7 @@ public:
 	Vector2 operator * (const double mul) const;
 
 	static double dist(Vector2 a, Vector2 b);
-	static double angle(Vector2 a, Vector2 b);
+	static double angle(Vector2 from, Vector2 to);
 
 	double x, y;
 };

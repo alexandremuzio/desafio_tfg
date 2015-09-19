@@ -15,56 +15,119 @@ using namespace std::chrono;
 Girombot::Girombot()
 {
 	first = true;
-	state = TROPPER;
+	state = TROOPER;
 }
-
 
 Girombot::~Girombot()
 {
 }
 
-
-void Girombot::process() {
+//main loop
+void Girombot::Process() {
 	//TODO
 	clean();
 
-	if (first) {
-		ms = duration_cast<milliseconds>(
-			system_clock::now().time_since_epoch()
-			).count();
-		first = false;
-	}
+	//if (first) {
+	//	ms = duration_cast<milliseconds>(
+	//		system_clock::now().time_since_epoch()
+	//		).count();
+	//	first = false;
+	//}
 
-	double newTime = duration_cast<milliseconds>(
-		system_clock::now().time_since_epoch()
-		).count();
+	//double newTime = duration_cast<milliseconds>(
+	//	system_clock::now().time_since_epoch()
+	//	).count();
 
 	switch (state) {
-
-		case TROPPER:
+		case TROOPER: {
+			gamestate->Log("Trooper:");
+			GameObject* closestObject = closestObjectFromSelf();
+			if (closestObject == nullptr) {
+				state = SNIPER;
+				break;
+			}
+			Vector2 targetPos = Vector2(closestObject->posx, closestObject->posy);
+			if (Vector2::dist(targetPos, pos) < 15) {
+				state = DODGER;
+				clean(); // stop thrusts
+				break;
+			}
 			if (checkIfCloseFromBorder())
 				state = SNIPER;
+
+			//Moving center of arena
+			else {
+				gamestate->Log("	Leaving center of arena");
+				double theta = atan2(0 - myShip->posx,
+					0 - myShip->posy);
+				thrustToAngle(0.5, theta);
+			}
 			break;
+		}
 
-		case SNIPER:
+		case SNIPER: {
+			gamestate->Log("Sniper:");
 			GameObject* closestObject = closestObjectFromSelf();
+			if (closestObject == nullptr) {
+				gamestate->Log("	No one to be seen");
+				break;
+			}
+			Vector2 targetPos = Vector2(closestObject->posx, closestObject->posy);
 
-			if (closestObject != nullptr) {
-				Vector2 targetPos = Vector2(closestObject->posx, closestObject->posy);
+			if (Vector2::dist(targetPos, pos) < 15) {
+				state = DODGER;
+			}
+
+			else {
+				//TODO change type of projectile logic
+				gamestate->Log("	Trying to shoot someone");
 				shootAtTarget(1, targetPos);
 			}
 			break;
+		}
+
+		case DODGER: {
+			gamestate->Log("Dodger:");
+			GameObject* closestObject = closestObjectFromSelf();
+
+			if (closestObject == nullptr) {
+				state = TROOPER;
+				break;
+			}
+
+			Vector2 targetPos = Vector2(closestObject->posx, closestObject->posy);
+			stringstream sstm;
+			sstm << "	Distance: " << Vector2::dist(targetPos, pos);
+			gamestate->Log(sstm.str());
+
+			//dodge closing in object
+			if (Vector2::dist(targetPos, pos) < 20) {
+				gamestate->Log("	dodging someone");
+				double escapeAngle = Vector2::angle(targetPos, pos);
+				thrustToAngle(1, escapeAngle);
+			}
+
+			else if (!checkIfCloseFromBorder()) {
+				state = TROOPER;
+			}
+
+			else {
+				state = SNIPER;
+			}
+			break;
+		}
 	}
 
-	sideThrustFront = -1;
-	sideThrustBack = 1;
-	stringstream sstm;
-	sstm << myShip->velAng << " " << newTime - ms;
-	gamestate->Log(sstm.str());
+	//stringstream sstm;
+	//sstm << myShip->velAng << " " << newTime - ms;
+	//gamestate->Log(sstm.str());
 }
 
 void Girombot::clean() {
 	shoot = 0;
+	sideThrustBack = 0;
+	sideThrustFront = 0;
+	thrust = 0;
 	pos = Vector2(myShip->posx, myShip->posy);
 }
 
@@ -87,36 +150,36 @@ void Girombot::goToAngle(double angle) {
 	//gamestate->Log(sstm.str());
 
 
-	//thrust = 0.2f;
 	sideThrustFront = -u;
 	sideThrustBack = +u;
-	//shoot = 1;
 }
 
 //Actions
 void Girombot::shootAtTarget(int intens, Vector2& target) {
 	double angle = Vector2::angle(pos, target);
-	if (angle < M_PI / 180 * 3.0) {
+	//angle threshold
+	if (angle < M_PI / 180 * 3.0)
 		shoot = intens;
-	}
 
-	else {
+	else
 		goToAngle(angle);
-	}
 }
 
+//TODO ship speed must be taken in account
+void Girombot::thrustToAngle(double u, double angle)
+{
+	double horizDirection = cos(angle) * u;
+	double vertDirection = sin(angle) * u;
+
+	sideThrustFront = horizDirection;
+	sideThrustBack = -horizDirection;
+
+	thrust = vertDirection;
+}
 
 //Helper Functions
 bool Girombot::checkIfCloseFromBorder() {
-	double R = gamestate->arenaRadius;
-	double diffX = 0 - myShip->posx;
-	double diffY = 0 - myShip->posy;
-
-	double theta = atan2(diffY, diffX);
-
-	Vector2 intercep = Vector2(R * cos(theta), R * sin(theta));
-	
-	return Vector2::dist(pos, intercep) < 10.0;
+	return Vector2::dist(pos, Vector2(0, 0)) < 30;
 }
 
 GameObject* Girombot::closestObjectFromSelf() {
@@ -145,17 +208,18 @@ GameObject* Girombot::closestObjectFromSelf() {
 			closestObject = o;
 		}
 	}
+	
+	//TODO - problem dodging his own laser
+	//for (auto laser : gamestate->lasers) {
+	//	auto o = laser.second;
 
-	for (auto laser : gamestate->lasers) {
-		auto o = laser.second;
-
-		Vector2 spos = Vector2(o->posx, o->posy);
-		double distToObject = Vector2::dist(spos, pos);
-		if (distToObject < minDist) {
-			minDist = distToObject;
-			closestObject = o;
-		}
-	}
+	//	Vector2 spos = Vector2(o->posx, o->posy);
+	//	double distToObject = Vector2::dist(spos, pos);
+	//	if (distToObject < minDist) {
+	//		minDist = distToObject;
+	//		closestObject = o;
+	//	}
+	//}
 
 	return closestObject;
 }

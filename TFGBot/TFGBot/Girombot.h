@@ -4,21 +4,24 @@
 #include "Vector2.h"
 
 enum State {
-	TROPPER,
-	SNIPER
+	TROOPER,
+	SNIPER,
+	DODGER
 };
 
 class Girombot : public BotBase {
 public:
 	Girombot();
 	~Girombot();
-	virtual void process();
+	virtual void Process();
 	void clean();
 
+	//control/action
 	void shootAtTarget(int intens, Vector2 & target);
-
+	void thrustToAngle(double u, double angle);
 	void goToAngle(double angle);
 
+	//helper
 	bool checkIfCloseFromBorder();
 	GameObject* closestObjectFromSelf();
 
