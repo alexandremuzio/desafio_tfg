@@ -89,6 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\top-asteroids-challenge\Includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,15 +150,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\BotBase.cpp" />
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\bot_interface.cpp" />
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\main.cpp" />
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\StupidBot.cpp" />
+    <ClCompile Include="..\..\top-asteroids-challenge\Includes\BotBase.cpp" />
+    <ClCompile Include="..\..\top-asteroids-challenge\Includes\bot_interface.cpp" />
+    <ClCompile Include="Girombot.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\BotBase.h" />
-    <ClInclude Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\bot_interface.h" />
-    <ClInclude Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\StupidBot.h" />
+    <ClInclude Include="..\..\top-asteroids-challenge\Includes\BotBase.h" />
+    <ClInclude Include="..\..\top-asteroids-challenge\Includes\bot_interface.h" />
+    <ClInclude Include="Girombot.h" />
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
