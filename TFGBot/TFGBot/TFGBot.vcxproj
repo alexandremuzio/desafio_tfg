@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -149,15 +149,56 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\BotBase.cpp" />
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\bot_interface.cpp" />
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\main.cpp" />
-    <ClCompile Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\StupidBot.cpp" />
+    <ResourceCompile Include="TFGBot.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\BotBase.h" />
-    <ClInclude Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\bot_interface.h" />
-    <ClInclude Include="..\..\top-asteroids-challenge\Bots\cpp\StupidBot\StupidBot\StupidBot.h" />
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="AlignAngMovement.h" />
+    <ClInclude Include="AlignVelMovement.h" />
+    <ClInclude Include="ApproachRectMovement.h" />
+    <ClInclude Include="BotBase.h" />
+    <ClInclude Include="EstimatorManager.h" />
+    <ClInclude Include="GameConst.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectEstimator.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="Laser.h" />
+    <ClInclude Include="MathUtils.h" />
+    <ClInclude Include="MoveAction.h" />
+    <ClInclude Include="Movement.h" />
+    <ClInclude Include="MovementManager.h" />
+    <ClInclude Include="PassedGSManager.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Rock.h" />
+    <ClInclude Include="Ship.h" />
+    <ClInclude Include="ShipEstimator.h" />
+    <ClInclude Include="ShipNorrisMA.h" />
+    <ClInclude Include="Vector2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="AlignAngMovement.cpp" />
+    <ClCompile Include="AlignVelMovement.cpp" />
+    <ClCompile Include="ApproachRectMovement.cpp" />
+    <ClCompile Include="BotBase.cpp" />
+    <ClCompile Include="EstimatorManager.cpp" />
+    <ClCompile Include="GameConst.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameObjectEstimator.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="Laser.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MathUtils.cpp" />
+    <ClCompile Include="MoveAction.cpp" />
+    <ClCompile Include="Movement.cpp" />
+    <ClCompile Include="MovementManager.cpp" />
+    <ClCompile Include="PassedGSManager.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Rock.cpp" />
+    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="ShipEstimator.cpp" />
+    <ClCompile Include="ShipNorrisMA.cpp" />
+    <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

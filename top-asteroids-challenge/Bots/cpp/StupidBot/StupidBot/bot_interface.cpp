@@ -1,10 +1,128 @@
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <vector>
 #include "bot_interface.h"
+#include "PassedGSManager.h"
+#include "GameConst.h"
 
 using namespace std;
+
+// GameObject struct implementation
+// ########################################################################################################
+
+GameObject::GameObject() {
+
+}
+
+GameObject::GameObject(int _uid, float _posx, float _posy, float _velx, float _vely, float _radius) {
+	uid = _uid;
+	posx = _posx;
+	posy = _posy;
+	velx = _velx;
+	vely = _vely;
+	radius = _radius;
+}
+
+GameObject::~GameObject() {
+
+}
+	
+void GameObject::CloneFrom(GameObject* go) {
+	uid = go->uid;
+	posx = go->posx;
+	posy = go->posy;
+	velx = go->velx;
+	vely = go->vely;
+	radius = go->radius;
+}
+
+void GameObject::UpdateBeforeBot(PassedGSManager* passedGSManager) {
+	// Estimate parameters
+}
+
+// --------------------------------------------------------------------------------------------------------
+// End GameObject struct implementation
+
+
+// Ship struct implementation
+// ########################################################################################################
+Ship::Ship() {
+
+}
+
+Ship::Ship(int _uid, float _posx, float _posy, float _velx, float _vely, float _radius, float _ang, float _velAng, float _charge, int _score) : GameObject(_uid, _posx, _posy, _velx, _vely, _radius) {
+	ang = _ang;
+	velAng = _velAng;
+	charge = _charge;
+	score = _score;
+}
+
+Ship::~Ship() {
+
+};
+
+void Ship::CloneFrom(Ship* ship) {
+	GameObject::CloneFrom(ship);
+	ang = ship->ang;
+	velAng = ship->velAng;
+	charge = ship->charge;
+	score = ship->score;
+	estimatedAng = ship->estimatedAng;
+	estimatedVelAng = ship->estimatedVelAng;
+	acAng = ship->acAng;
+}
+
+void Ship::UpdateBeforeBot(PassedGSManager* passedGSManager) {
+	GameObject::UpdateBeforeBot(passedGSManager);
+	ang *= deg2rad;
+	velAng *= deg2rad;
+
+	estimatedVelAng = velAng;
+	for (int i = passedGSManager->nStored() - 1; i >= 1; --i)
+		estimatedVelAng += passedGSManager->Get(i)->myShip->acAng*passedGSManager->Get(i)->timeStep;
+
+	estimatedAng = ang + velAng*passedGSManager->Get(0)->timeStep;	// Idealy timeStep must be estimatedNextTimeStep if physics do not process in constant step.
+																	// I think that for guarantee a good visibility while watching the game, 
+																	// the physics step must be not constant, but it remains not know => send an email
+	for (int i = passedGSManager->nStored() - 2; i >= 1; --i)
+		estimatedAng += passedGSManager->Get(i)->myShip->estimatedVelAng*passedGSManager->Get(i)->timeStep;
+}
+
+void Ship::UpdateAfterBot(PassedGSManager* passedGSManager) {
+	//acAng = 1 / Constants::Instance()->J*(2 * passedGSManager->Get(0)->GetSideThrustFront() - 2 * passedGSManager->Get(0)->GetSideThrustBack());
+}
+// --------------------------------------------------------------------------------------------------------
+// End Ship struct implementation
+
+// Laser struct implementation
+// ########################################################################################################
+Laser::Laser() {
+
+}
+
+Laser::Laser(int _uid, float _posx, float _posy, float _velx, float _vely, float _radius, float _lifetime, int _owner) : GameObject(_uid, _posx, _posy, _velx, _vely, _radius) {
+	lifetime = _lifetime;
+	owner = _owner;
+}
+
+Laser::~Laser() {
+
+}
+// --------------------------------------------------------------------------------------------------------
+// End Laser struct implementation
+
+// Rock struct implementation
+// ########################################################################################################
+Rock::Rock() {
+
+}
+
+Rock::Rock(int _uid, float _posx, float _posy, float _velx, float _vely, float _radius) : GameObject(_uid, _posx, _posy, _velx, _vely, _radius) {
+
+}
+
+Rock::~Rock() {
+
+}
+// --------------------------------------------------------------------------------------------------------
+// End Rock struct implementation
 
 GameState::GameState()
 {
@@ -36,9 +154,14 @@ GameState::~GameState()
     }
 }
 
-void GameState::Update()
-{
+void GameState::CloneFrom(GameState* gs) {
+	myShip->CloneFrom(gs->myShip);
+	// Implement others clones here
+}
+
+void GameState::UpdateBeforeBot(PassedGSManager* passedGSManager) {
 	ReadData();
+	myShip->UpdateBeforeBot(passedGSManager);
 }
 
 void GameState::ReadData()
@@ -117,7 +240,7 @@ void GameState::ParseData(string toParse)
 			
 			shipIds.push_back(uid);
 			
-			if(ships[uid] == NULL)
+			if(ships[uid] == nullptr)
 			{
 				Ship * newShip = new Ship(uid, posx, posy, velx, vely, radius, ang, velAng, charge, score);
 				ships[uid] = newShip;
@@ -155,7 +278,7 @@ void GameState::ParseData(string toParse)
 			
 			rockIds.push_back(uid);
 			
-			if(rocks[uid] == NULL)
+			if(rocks[uid] == nullptr)
 			{
 				Rock * newRock = new Rock(uid, posx, posy, velx, vely, radius);
 				rocks[uid] = newRock;
@@ -192,7 +315,7 @@ void GameState::ParseData(string toParse)
 			
 			laserIds.push_back(uid);
 			
-			if(lasers[uid] == NULL)
+			if(lasers[uid] == nullptr)
 			{
 				Laser * newLaser = new Laser(uid, posx, posy, velx, vely, radius, lifetime, owner);
 				lasers[newLaser->uid] = newLaser;
@@ -285,6 +408,11 @@ void GameState::ParseData(string toParse)
 void GameState::Log(string message)
 {
 	std::cerr << message << endl;
+}
+
+void GameState::UpdateAfterBot(PassedGSManager* passedGSManager) {
+	myShip->UpdateAfterBot(passedGSManager);
+	WriteData();
 }
 
 void GameState::WriteData()

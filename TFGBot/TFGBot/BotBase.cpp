@@ -1,4 +1,5 @@
 #include "BotBase.h"
+#include "GameState.h"
 
 BotBase::BotBase()
 {
@@ -10,13 +11,12 @@ BotBase::BotBase()
 	shoot = 0;
 }
 
-BotBase::~BotBase()
-{
+BotBase::~BotBase(){
 	
 }
 	
-void BotBase::Update()
-{
+void BotBase::Update(){
+
 	if(gamestate != nullptr)
 	{
 		if(myShip != nullptr)
