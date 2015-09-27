@@ -13,6 +13,7 @@ private:
 	MovementManager* movementManager;
 
 	void FirstTick();
+	void Foo();
 	void UpdatePassedGS();
 	void PrintPassedGS();
 

@@ -260,8 +260,27 @@ void GameState::Log(string message) {
 	std::cerr << message << endl;
 }
 
+void GameState::PrintAction() {
+	stringstream ss;
+	ss << "Action: (" << thrust << ", " << sideThrustFront << ", " << sideThrustBack << ", " << shoot << ")";
+	Log(ss.str());
+}
+
+void GameState::PrintAction(string s) {
+	stringstream ss;
+	ss << "Action (" << s << "): (" << thrust << ", " << sideThrustFront << ", " << sideThrustBack << ", " << shoot << ")";
+	Log(ss.str());
+}
+
 void GameState::UpdateAfterBot() {
+	NormalizeAction();
 	myShip->UpdateAfterBot();
+}
+
+void GameState::NormalizeAction() {
+	thrust = MathUtils::Limit(thrust, -1.0f, 1.0f);
+	sideThrustFront = MathUtils::Limit(sideThrustFront, -1.0f, 1.0f);
+	sideThrustBack = MathUtils::Limit(sideThrustBack, -1.0f, 1.0f);
 }
 
 void GameState::WriteData() {

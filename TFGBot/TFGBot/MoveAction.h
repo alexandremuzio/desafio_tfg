@@ -13,7 +13,6 @@ public:
 	MoveAction();
 	MoveAction(Vector2, float);
 	MoveAction(float, float, float);
-	MoveAction(int, float);
 	~MoveAction();
 
 	MoveAction operator+(const MoveAction& other) {

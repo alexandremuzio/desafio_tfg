@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <string>
 
 using namespace std;
 
@@ -26,10 +27,14 @@ public:
 	Vector2 operator + (const Vector2 & a) const;
 	Vector2 operator - (const Vector2 & a) const;
 	Vector2 operator * (const float mul) const;
-	float Angle();
-	pair<float, float> Decompose( Vector2 v1, Vector2 v2 );
-	Vector2 RotatedBy(float ang);
+	bool operator == (const Vector2 & a) const;
+	static float Angle(const Vector2& from, const Vector2& to);
+	float Angle() const;
+	pair<float, float> Decompose(Vector2 v1, Vector2 v2);
+	Vector2 RotatedBy(float ang) const;
+	void Print(string);
 
+	void Print();
 	static float Dist(Vector2 a, Vector2 b);
-	static float Angle(Vector2 from, Vector2 to);
+	static bool VecEqual( const Vector2& v0, const Vector2& v1, float delta);
 };

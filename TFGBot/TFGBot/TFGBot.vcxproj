@@ -95,7 +95,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>echo F| xcopy /y "$(TargetDir)$(ProjectName).exe" "$(SolutionDir)..\top-asteroids-challenge\Bots\cpp\mybot.exe"</Command>
+      <Command>echo F| xcopy /y "$(TargetDir)$(ProjectName).exe" "$(SolutionDir)..\top-asteroids-challenge\Bots\cpp\mybot.exe"
+lib /NOLOGO /OUT:"C:\Users\MarcoAurelio\Desktop\desafio_tfg\TFGBot\TFGBot\Debug\TFGBot.lib" "$(ProjectDir)\$(Configuration)\*.obj"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

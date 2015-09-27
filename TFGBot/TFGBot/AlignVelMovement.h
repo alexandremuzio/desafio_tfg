@@ -12,7 +12,6 @@ class AlignVelMovement : Movement {
 
 private:
 
-	MoveAction ma;	
 	static int nStages;
 	int stage;
 	Vector2 desVel;
@@ -21,13 +20,14 @@ private:
 
 public:
 
+	AlignVelMovement();
 	AlignVelMovement(float, float);
 	~AlignVelMovement();
 
 	MoveAction Update();
 	void InitStages();
+	pair<Vector2, Vector2> GetClosestVectors(const Vector2& shipDir);
 	MoveAction Stage0Update();
 	MoveAction Stage1Update();
 	void IncStage();
 };
-

@@ -15,7 +15,8 @@ class Laser;
 //using namespace std;
 
 class GameState {
-	private:
+
+private:
 
 	float thrust;
 	float sideThrustFront;
@@ -24,7 +25,7 @@ class GameState {
 
 	void ParseData(string toParse);
 
-	public:
+public:
 
 	Ship * myShip;
 
@@ -64,5 +65,9 @@ class GameState {
 	void SetSideThrustBack(const float& _sideThrustBack) { sideThrustBack = _sideThrustBack; }
 	void SetShoot(const int& _shoot) { shoot = _shoot; }
 
+	void NormalizeAction();
+
 	void Log(string message);
+	void PrintAction();
+	void PrintAction(string s);
 };

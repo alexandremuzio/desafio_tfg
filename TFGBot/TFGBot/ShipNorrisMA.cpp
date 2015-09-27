@@ -18,8 +18,14 @@ ShipNorrisMA::~ShipNorrisMA() {
 void ShipNorrisMA::FirstTick() {
 	movementManager = new MovementManager();
 	movementManager->SetDesiredLinearVel(10);
-	movementManager->AlignAng(90*MathUtils::deg2rad);
+	movementManager->AlignVel(-1, -1);
 }
+
+void ShipNorrisMA::Foo() {
+	movementManager->SetDesiredLinearVel(15);
+	movementManager->AlignVel(-45*MathUtils::deg2rad);
+}
+
 
 void ShipNorrisMA::Process() {
 	MoveAction ma;
@@ -27,9 +33,14 @@ void ShipNorrisMA::Process() {
 	if (gamestate->tick == 0) {
 		FirstTick();
 	}
+	else if (gamestate->tick == 50) {
+		Foo();
+	}
 	else {
 		ma = movementManager->Update();
 	}
+
+	//myShip->PrintVel();
 
 	/*thrust = (gamestate->tick > 100 ? 1.0f : 0.0f);*/
 	thrust = ma.thrust;
@@ -37,8 +48,13 @@ void ShipNorrisMA::Process() {
 	sideThrustBack = ma.sideThrustBack;
 	shoot = 0;
 
-	/*stringstream ss;
-	ss << myShip->posx << "(posx)";
+	stringstream ss;
+	/*ss << myShip->posx << "(posx)";
 	ss << "\t" << myShip->posy << "(posy)";
-	gamestate->Log(ss.str());*/
+	ss << "\t" << myShip->ang << "(ang)";*/
+	/*ss << myShip->velx << "(velx)" << endl;
+	ss << myShip->vely << "(vely)";
+	gamestate->Log(ss.str());
+
+	ma.Print();*/
 }

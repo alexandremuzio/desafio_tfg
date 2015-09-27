@@ -23,6 +23,11 @@ int main (int argc, char *argv[])
 	while(bot->myShip != nullptr)
 	{
 		gamestate->ReadData();
+
+		stringstream ss;
+		ss << "tick -> " << gamestate->GetTick();
+		gamestate->Log(ss.str());
+
 		gamestate->UpdateBeforeBot();
 		EstimatorManager::Update();
 		bot->Update();

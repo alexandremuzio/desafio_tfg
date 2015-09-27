@@ -36,6 +36,8 @@ MoveAction MovementManager::Update() {
 
 // ang in rad (belong between[-PI, PI]) and in trigonometric coordinates 
 void MovementManager::AlignAng(float finalAng) {
+	if (alignAngMov != nullptr)
+		delete alignAngMov;
 	alignAngMov = new AlignAngMovement(finalAng);
 }
 
@@ -45,8 +47,8 @@ void MovementManager::AlignAng(float vx, float vy) {
 	AlignAng(angTrigCoord);
 }
 
-void MovementManager::AlignVel(float finalAngVel) {
-
+void MovementManager::AlignVel(float finalVelAng) {
+	AlignVel(cos(finalVelAng), sin(finalVelAng));
 }
 
 void MovementManager::AlignVel(float vx, float vy) {
@@ -59,6 +61,9 @@ void MovementManager::AlignVel(float vx, float vy) {
 		vx = k2*vx;
 		vy = k2*vy;
 	}
+
+	if (alignVelMov != nullptr)
+		delete alignVelMov;
 	alignVelMov = new AlignVelMovement(vx, vy);
 }
 
