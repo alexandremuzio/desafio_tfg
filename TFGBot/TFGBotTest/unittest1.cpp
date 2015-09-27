@@ -44,7 +44,7 @@ public:
 		Vector2 v = Vector2(1 / sqrt(2), 1 / sqrt(2));
 		Assert::AreEqual(true, Vector2::VecEqual(Vector2(0, 1), v.RotatedBy(pi / 4), 0.001f));
 		Assert::AreEqual(true, Vector2::VecEqual(Vector2(1, 0), v.RotatedBy(-pi / 4), 0.001f));
-		Assert::AreEqual(true, Vector2::VecEqual(Vector2(-1, 0), v.RotatedBy(-3 * pi / 4), 0.001f));
+		Assert::AreEqual(true, Vector2::VecEqual(Vector2(-1, 0), v.RotatedBy(-5 * pi / 4), 0.001f));
 	}
 
 	TEST_METHOD(VectorDecompose) {
