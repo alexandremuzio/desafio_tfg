@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Vector2.h"
+
 class PassedGSManager;
 
 struct GameObject {
@@ -16,4 +18,7 @@ struct GameObject {
 
 	void CloneFrom(GameObject*);
 	void UpdateBeforeBot();
+
+	Vector2 GetVelVec();
+	Vector2 GetPosVec();
 };

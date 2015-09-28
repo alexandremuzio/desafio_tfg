@@ -6,9 +6,10 @@
 #include "PassedGSManager.h"
 #include "MathUtils.h"
 #include "MovementManager.h"
+#include "Vector2.h"
 
 ShipNorrisMA::ShipNorrisMA() {
-
+		
 }
 
 ShipNorrisMA::~ShipNorrisMA() {
@@ -16,45 +17,66 @@ ShipNorrisMA::~ShipNorrisMA() {
 }
 
 void ShipNorrisMA::FirstTick() {
-	movementManager = new MovementManager();
-	movementManager->SetDesiredLinearVel(10);
-	movementManager->AlignVel(-1, -1);
+	movManager = new MovementManager();
+	def = new Defense(gamestate, myShip);
+	atk = new Attack(gamestate, myShip);
 }
 
-void ShipNorrisMA::Foo() {
-	movementManager->SetDesiredLinearVel(15);
-	movementManager->AlignVel(-45*MathUtils::deg2rad);
-}
+//void ShipNorrisMA::CheckDodge() {
+//	if ( movManager->Dodging() )
+//		return;
+//
+//	GameObject* go;
+//	for (map<int, Rock*>::iterator itr = gamestate->rocks.begin(); itr != gamestate->rocks.end(); itr++) {
+//		
+//	}
+//	for (map<int, Laser*>::iterator itr = gamestate->lasers.begin(); itr != gamestate->lasers.end(); itr++) {
+//		go = (GameObject*)(itr->second);
+//		if (NeedDodgeFrom(go)) {
+//			movManager->Dodge(go);
+//			return;
+//		}
+//	}
+//}
 
+//bool ShipNorrisMA::NeedDodgeFrom(GameObject* go) {
+//	Vector2 pos = Vector2(go->posx, go->posy);
+//	if ( Vector2::Dist(pos, myShip->GetPosVec()) < 50.0f + myShip->radius + go->radius )
+//		return true;
+//	return false;
+//}
 
 void ShipNorrisMA::Process() {
-	MoveAction ma;
 
 	if (gamestate->tick == 0) {
 		FirstTick();
 	}
-	else if (gamestate->tick == 50) {
-		Foo();
-	}
 	else {
-		ma = movementManager->Update();
+		Vector2 v = def->GetVel();
+		v.ValidVel();
+		movManager->SetDesiredLinearVel(v.Dist());
+		movManager->AlignVel(v.x, v.y);
+
+		pair<float, int> angShoot = atk->GetAngShoot();
+		movManager->AlignAng(angShoot.first);
+
+		MoveAction ma = movManager->Update();
+
+		thrust = ma.thrust;
+		sideThrustFront = ma.sideThrustFront;
+		sideThrustBack = ma.sideThrustBack;
+		shoot = angShoot.second;
 	}
 
-	//myShip->PrintVel();
+	/*CheckDodge();*/
 
-	/*thrust = (gamestate->tick > 100 ? 1.0f : 0.0f);*/
-	thrust = ma.thrust;
-	sideThrustFront = ma.sideThrustFront;
-	sideThrustBack = ma.sideThrustBack;
-	shoot = 0;
-
-	stringstream ss;
-	/*ss << myShip->posx << "(posx)";
-	ss << "\t" << myShip->posy << "(posy)";
-	ss << "\t" << myShip->ang << "(ang)";*/
-	/*ss << myShip->velx << "(velx)" << endl;
+	/*stringstream ss;
+	ss << myShip->posx << "(posx)" << endl;
+	ss << myShip->posy << "(posy)" << endl;
+	ss << myShip->ang << "(ang)" << endl;
+	ss << myShip->velx << "(velx)" << endl;
 	ss << myShip->vely << "(vely)";
-	gamestate->Log(ss.str());
+	gamestate->Log(ss.str());*/
 
-	ma.Print();*/
+	//ma.Print();
 }

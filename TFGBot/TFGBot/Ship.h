@@ -29,6 +29,8 @@ struct Ship : public GameObject {
 	Vector2 GetDownLeftVec();
 	Vector2 GetLeftVec();
 	Vector2 GetLeftUpVec();
+	Vector2 GetPosVec();
+	Vector2 GetVelVec();
 	void PrintVel();
 	void PrintVel(string s);
 	void PrintPos();

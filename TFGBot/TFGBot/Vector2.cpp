@@ -38,7 +38,7 @@ Vector2 Vector2::operator*(const float mul) const {
 }
 
 bool Vector2::operator==(const Vector2 & a) const {
-	return abs(x - a.x) < 0.001f && abs(y-a.y) < 0.001f;
+	return abs(x - a.x) < 0.001f && abs(y - a.y) < 0.001f;
 }
 
 
@@ -56,8 +56,8 @@ pair<float, float> Vector2::Decompose(Vector2 v0, Vector2 v1) {
 	v0.Print();
 	v1.Print();*/
 
-	p.first = (x*v1.y-y*v1.x)/(v0.x*v1.y-v0.y*v1.x);
-	p.second = (x*v0.y - y*v0.x) / (v1.x*v0.y-v1.y*v0.x);
+	p.first = (x*v1.y - y*v1.x) / (v0.x*v1.y - v0.y*v1.x);
+	p.second = (x*v0.y - y*v0.x) / (v1.x*v0.y - v1.y*v0.x);
 
 	/*ss.clear();
 	ss.str("");
@@ -70,11 +70,28 @@ pair<float, float> Vector2::Decompose(Vector2 v0, Vector2 v1) {
 
 // ang > 0 => counter-clockwise rotation
 Vector2 Vector2::RotatedBy(float ang) const {
-	return Vector2(x*cos(ang)-y*sin(ang), x*sin(ang)+y*cos(ang));
+	return Vector2(x*cos(ang) - y*sin(ang), x*sin(ang) + y*cos(ang));
+}
+
+void Vector2::SetLength(float newLength) {
+	float currLength = hypot(x, y);
+	x = x*newLength / currLength;
+	y = y*newLength / currLength;
+}
+
+void Vector2::ValidVel() {
+	if ( x == 0.0f )
+		x = 0.000001f;
+	if (y == 0.0f)
+		y = 0.000001f;
 }
 
 float Vector2::Dist(Vector2 a, Vector2 b) {
-	return hypot(a.x-b.x, a.y-b.y);
+	return hypot(a.x - b.x, a.y - b.y);
+}
+
+float Vector2::Dist() {
+	return hypot(x, y);
 }
 
 bool Vector2::VecEqual(const Vector2& v0, const Vector2& v1, float delta) {
@@ -91,6 +108,10 @@ float Vector2::Angle(const Vector2& from, const Vector2& to) {
 	return MathUtils::NormailizeAng(to.Angle() - from.Angle());
 }
 
+float Vector2::Cross(const Vector2& u, const Vector2& v) {
+	return u.x*v.y - u.y*v.x;
+}
+
 void Vector2::Print() {
 	stringstream ss;
 	ss << "Vector2 (" << x << ", " << y << ")";
@@ -104,11 +125,11 @@ void Vector2::Print(string s) {
 }
 
 Vector2 Vector2::ZERO = Vector2();
-Vector2 Vector2::UP = Vector2(0.0f,1.0f);
-Vector2 Vector2::UP_RIGHT = Vector2(1/MathUtils::SQRT_2, 1/MathUtils::SQRT_2);
+Vector2 Vector2::UP = Vector2(0.0f, 1.0f);
+Vector2 Vector2::UP_RIGHT = Vector2(1 / MathUtils::SQRT_2, 1 / MathUtils::SQRT_2);
 Vector2 Vector2::RIGHT = Vector2(1.0f, 0.0f);
-Vector2 Vector2::RIGHT_DOWN = Vector2(1/MathUtils::SQRT_2, -1/MathUtils::SQRT_2);
+Vector2 Vector2::RIGHT_DOWN = Vector2(1 / MathUtils::SQRT_2, -1 / MathUtils::SQRT_2);
 Vector2 Vector2::DOWN = Vector2(0.0f, -1.0f);;
-Vector2 Vector2::DOWN_LEFT = Vector2(-1/MathUtils::SQRT_2, -1/MathUtils::SQRT_2);
+Vector2 Vector2::DOWN_LEFT = Vector2(-1 / MathUtils::SQRT_2, -1 / MathUtils::SQRT_2);
 Vector2 Vector2::LEFT = Vector2(-1.0f, 0.0f);
-Vector2 Vector2::LEFT_UP = Vector2(-1/MathUtils::SQRT_2, 1/MathUtils::SQRT_2);
+Vector2 Vector2::LEFT_UP = Vector2(-1 / MathUtils::SQRT_2, 1 / MathUtils::SQRT_2);

@@ -32,9 +32,13 @@ public:
 	float Angle() const;
 	pair<float, float> Decompose(Vector2 v1, Vector2 v2);
 	Vector2 RotatedBy(float ang) const;
+	void SetLength(float newLength);
+	void ValidVel();
 	void Print(string);
 
 	void Print();
 	static float Dist(Vector2 a, Vector2 b);
-	static bool VecEqual( const Vector2& v0, const Vector2& v1, float delta);
+	float Dist();
+	static bool VecEqual(const Vector2& v0, const Vector2& v1, float delta);
+	static float Cross(const Vector2& u, const Vector2& v);
 };

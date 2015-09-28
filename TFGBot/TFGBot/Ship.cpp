@@ -70,8 +70,8 @@ void Ship::UpdateAfterBot() {
 	acy = linAc.y;
 
 	//gs->PrintAction("after bot update");
-	//PrintLinAc("after bot update");
-	//PrintVel("after bot update");
+	/*PrintLinAc("after bot update");
+	PrintVel("after bot update");*/
 }
 
 Vector2 Ship::GetDirVec() {
@@ -114,6 +114,14 @@ Vector2 Ship::GetLeftVec() {
 
 Vector2 Ship::GetLeftUpVec() {
 	return Vector2::LEFT_UP.RotatedBy(ang - MathUtils::PI / 2);
+}
+
+Vector2 Ship::GetPosVec() {
+	return Vector2(posx, posy);
+}
+
+Vector2 Ship::GetVelVec() {
+	return Vector2(velx, vely);
 }
 
 void Ship::PrintPos() {

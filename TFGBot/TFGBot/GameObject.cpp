@@ -14,7 +14,7 @@ GameObject::GameObject(int _uid, float _posx, float _posy, float _velx, float _v
 }
 
 GameObject::~GameObject() {
-
+	
 }
 
 void GameObject::CloneFrom(GameObject* go) {
@@ -28,4 +28,12 @@ void GameObject::CloneFrom(GameObject* go) {
 
 void GameObject::UpdateBeforeBot() {
 	
+}
+
+Vector2 GameObject::GetVelVec() {
+	return Vector2(velx, vely);
+}
+
+Vector2 GameObject::GetPosVec() {
+	return Vector2(posx, posy);
 }

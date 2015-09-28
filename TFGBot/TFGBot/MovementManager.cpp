@@ -1,11 +1,14 @@
 #include "MovementManager.h"
 
+#include <stdexcept>
+
 #include "Point.h"
 #include "AlignAngMovement.h"
 #include "AlignVelMovement.h"
 #include "ApproachRectMovement.h"
 #include "PassedGSManager.h"
 #include "GameConst.h"
+#include "DodgeLaserMovement.h"
 
 MovementManager::MovementManager() {
 	Movement::setMyShip(PassedGSManager::Get(0)->myShip);
@@ -13,6 +16,8 @@ MovementManager::MovementManager() {
 	alignAngMov = nullptr;
 	alignVelMov = nullptr;
 	approachRectMov = nullptr;
+	dodgeMov = nullptr;
+	lastVel = Vector2(0.001f, 0.001f);
 }
 
 MovementManager::MovementManager(float desiredVel) : MovementManager() {
@@ -25,9 +30,16 @@ MovementManager::~MovementManager() {
 
 MoveAction MovementManager::Update() {
 	MoveAction ma;
+
 	if (alignAngMov != nullptr)		ma = ma + alignAngMov->Update();
 	if (alignVelMov != nullptr)		ma = ma + alignVelMov->Update();
 	if (approachRectMov != nullptr)	ma = ma + approachRectMov->Update();
+	if (dodgeMov != nullptr){
+		if ( dodgeMov->Finish() )
+			FinishDodge();
+		else
+			ma = ma + dodgeMov->Update();
+	}	
 
 	//ma.Print();
 
@@ -52,6 +64,7 @@ void MovementManager::AlignVel(float finalVelAng) {
 }
 
 void MovementManager::AlignVel(float vx, float vy) {
+	lastVel = Vector2(vx, vy);
 	float v = hypot(vx, vy);
 	float k1 = desiredLinearVel / v;
 	vx *= k1;
@@ -75,8 +88,25 @@ void MovementManager::ApproachRect(Point* p1, Point*p2) {
 	
 }
 
+void MovementManager::Dodge(GameObject* go) {
+	if (alignVelMov != nullptr) {
+		delete alignVelMov;
+		alignVelMov = nullptr;
+	}
+	dodgeMov = new DodgeLaserMovement(go);
+}
+
+void MovementManager::FinishDodge() {
+	if (dodgeMov) {
+		delete dodgeMov;
+		dodgeMov = nullptr;
+	}
+	SetDesiredLinearVel(0.0f);
+}
+
 void MovementManager::SetDesiredLinearVel(float desiredVel) {
 	this->desiredLinearVel = desiredVel;
+	AlignVel(lastVel.x, lastVel.y);
 }
 
 bool MovementManager::AligningAng() {
@@ -89,4 +119,8 @@ bool MovementManager::AligningVel() {
 
 bool MovementManager::ApproachingRect() {
 	return approachRectMov != nullptr;
+}
+
+bool MovementManager::Dodging() {
+	return dodgeMov != nullptr;
 }
