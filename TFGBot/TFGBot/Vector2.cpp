@@ -120,7 +120,7 @@ void Vector2::Print() {
 
 void Vector2::Print(string s) {
 	stringstream ss;
-	ss << "Vector2 (" << s << "): " << "(" << x << ", " << y << ")";
+	ss << "Vector2 (" << s << "): " << "(" << x << ", " << y << ")" << " | Length = " << Dist();
 	PassedGSManager::Get(0)->Log(ss.str());
 }
 

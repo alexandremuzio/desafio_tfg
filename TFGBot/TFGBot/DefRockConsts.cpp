@@ -9,8 +9,10 @@ DefRockConsts::DefRockConsts() {
 DefRockConsts::~DefRockConsts() {
 }
 
-float DefRockConsts::radius = 10.0f;
+float DefRockConsts::radius = 8.0f;
 
-float DefRockConsts::weightConst = 500.0f;
+float DefRockConsts::weightConst = 200.0f;
 
-float DefRockConsts::distExp = 2.0f;
+float DefRockConsts::distExp = 1.5f;
+
+float DefRockConsts::minDistToDefend = 50.0f;

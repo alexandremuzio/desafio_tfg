@@ -7,6 +7,10 @@
 #include "DefenseWall.h"
 #include "DefenseLaser.h"
 #include "DefenseShipSight.h"
+#include "DefenseFutureLaser.h"
+#include "DefFutureRock.h"
+#include "DefenseCenter.h"
+#include "DefenceOpponent.h"
 
 class Defense {
 
@@ -18,6 +22,11 @@ private:
 	DefenseWall* defWall;
 	DefenseLaser* defLaser;
 	DefenseShipSight* defShipSight;
+	DefenseFutureLaser* defFutureLaser;
+	DefFutureRock* defFutureRock;
+	DefenseCenter* defCenter;
+	DefenceOpponent* defOpponent;
+	Vector2 lastVel;
 
 public:
 

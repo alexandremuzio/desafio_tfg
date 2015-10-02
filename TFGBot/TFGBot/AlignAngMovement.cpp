@@ -30,8 +30,8 @@ MoveAction AlignAngMovement::Update() {
 	float ac = 0.0f;
 	/*float kx = -16.94;
 	float ky = -5.32;*/
-	float kx = -15.5;
-	float ky = -4.5;
+	float kx = -17.0f;
+	float ky = -5.5f;
 	float e1 = MathUtils::MinDeltaAng(finalAng, myShip->estimatedAng);
 	float e2 = -myShip->velAng;
 	float deltaAng = e1;
@@ -56,11 +56,11 @@ MoveAction AlignAngMovement::Update() {
 
 		float nextEstimatedVelAng = myShip->velAng + ac*gamestate->GetTimeStep();
 
-		stringstream ss;
+		/*stringstream ss;
 		ss << "\t" << (nextEstimatedVelAng) << "(nextEstimatedVelAng)";
 		ss << "\t" << myShip->estimatedVelAng << "(estimatedVelAng)";
 		ss << endl;
-		gamestate->Log(ss.str());
+		gamestate->Log(ss.str());*/
 
 		if (MathUtils::Sign(nextEstimatedVelAng*myShip->estimatedVelAng) != 1)
 			alignAngState++;

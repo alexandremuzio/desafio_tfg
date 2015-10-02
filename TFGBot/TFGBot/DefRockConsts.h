@@ -9,5 +9,6 @@ public:
 	static float radius;
 	static float weightConst;
 	static float distExp;
+	static float minDistToDefend;
 };
 

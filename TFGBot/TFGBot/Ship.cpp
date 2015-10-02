@@ -14,8 +14,10 @@ Ship::Ship(int _uid, float _posx, float _posy, float _velx, float _vely, float _
 	charge = _charge;
 	score = _score;
 	acAng = 0.0f;
-	acx = 0.0f;
-	acy = 0.0f;
+	estimatedAcX = 0.0f;
+	estimatedAcY = 0.0f;
+	estimatedAng = ang;
+	estimatedVelAng = velAng;
 }
 
 Ship::~Ship() {
@@ -30,6 +32,8 @@ void Ship::CloneFrom(Ship* ship) {
 	score = ship->score;
 	estimatedAng = ship->estimatedAng;
 	estimatedVelAng = ship->estimatedVelAng;
+	estimatedAcX = ship->estimatedAcX;
+	estimatedAcY = ship->estimatedAcY;
 	acAng = ship->acAng;
 }
 
@@ -50,7 +54,27 @@ void Ship::UpdateAfterBot() {
 	// This way in every step i calculate the exactly accelerations
 
 	GameState* gs = PassedGSManager::Get(0);
-	acAng = 1 / GameConst::J*GameConst::sideThrusterOffset *GameConst::sideThrustersForce*(-gs->GetSideThrustFront() + gs->GetSideThrustBack());
+	GameState* lastgs = PassedGSManager::Get(1);
+	if (gs->myShip->uid == uid) {
+		acAng = 1 / GameConst::J*GameConst::sideThrusterOffset *GameConst::sideThrustersForce*(-gs->GetSideThrustFront() + gs->GetSideThrustBack());
+	}
+	else {
+		//if ( lastgs == nullptr )
+		//	acAng = (estimatedVelAng - 0.0f) / gs->GetTimeStep();
+		//else {
+		//	acAng = (estimatedVelAng - lastgs->ships[uid]->estimatedVelAng) / gs->GetTimeStep();
+
+		//	/*stringstream ss;
+		//	ss << "---: " << endl;
+		//	ss << lastgs->ships[uid]->estimatedVelAng << "(lastgs->ships[uid]->estimatedVelAng)" << endl;
+		//	PassedGSManager::Get(0)->Log(ss.str());*/
+
+		//	lastgs->ships[uid]->estimatedVelAng;
+		//	1/gs->GetTimeStep();
+		//	estimatedVelAng;
+		//	acAng = 1;
+		//}
+	}
 
 	/*stringstream ss;
 	ss << "---: " << endl;
@@ -58,16 +82,28 @@ void Ship::UpdateAfterBot() {
 	ss << "\t" << GameConst::sideThrustersForce << "(GameConst::sideThrustersForce)";
 	PassedGSManager::Get(0)->Log(ss.str());*/
 
-	acx =	gs->GetSideThrustFront()*(GameConst::sideThrustersForce / GameConst::shipMass) +
+	if (gs->myShip->uid == uid) {
+		estimatedAcX = gs->GetSideThrustFront()*(GameConst::sideThrustersForce / GameConst::shipMass) +
 			gs->GetSideThrustBack()*(GameConst::sideThrustersForce / GameConst::shipMass);
-	acy = gs->GetThrust()*(GameConst::mainThrusterForce / GameConst::shipMass);
-	Vector2 linAc = Vector2(acx, acy);
+		estimatedAcY = gs->GetThrust()*(GameConst::mainThrusterForce / GameConst::shipMass);
+		Vector2 linAc = Vector2(estimatedAcX, estimatedAcY);
 
-	//PrintLinAc("before rotation");
+		//PrintLinAc("before rotation");
 
-	linAc = linAc.RotatedBy(ang - Vector2::UP.Angle());
-	acx = linAc.x;
-	acy = linAc.y;
+		linAc = linAc.RotatedBy(ang - Vector2::UP.Angle());
+		estimatedAcX = linAc.x;
+		estimatedAcY = linAc.y;
+	}
+	else {
+		/*if (lastgs == nullptr) {
+			estimatedAcX = (velx - 0.0f) / gs->GetTimeStep();
+			estimatedAcY = (velx - 0.0f) / gs->GetTimeStep();
+			}
+			else {
+			estimatedAcX = (velx - lastgs->ships[uid]->velx) / gs->GetTimeStep();
+			estimatedAcY = (velx - lastgs->ships[uid]->velx) / gs->GetTimeStep();
+		}*/
+	}
 
 	//gs->PrintAction("after bot update");
 	/*PrintLinAc("after bot update");
@@ -144,13 +180,13 @@ void Ship::PrintVel(string s) {
 
 void Ship::PrintLinAc() {
 	stringstream ss;
-	ss << "Ship lin. acceleration: " << "(" << acx << ", " << acy << ")";
+	ss << "Ship lin. acceleration: " << "(" << estimatedAcX << ", " << estimatedAcY << ")";
 	PassedGSManager::Get(0)->Log(ss.str());
 }
 
 void Ship::PrintLinAc(string s) {
 	stringstream ss;
-	ss << "Ship lin. acceleration (" << s << ") : " << "(" << acx << ", " << acy << ")";
+	ss << "Ship lin. acceleration (" << s << ") : " << "(" << estimatedAcX << ", " << estimatedAcY << ")";
 	PassedGSManager::Get(0)->Log(ss.str());
 }
 

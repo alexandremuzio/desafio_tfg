@@ -11,7 +11,7 @@ struct Ship : public GameObject {
 	float acAng;					// Is updated after the action be defined (rad / s^2)
 	float charge;					// Check if charge load has delay
 	int score;
-	float acx, acy;
+	float estimatedAcX, estimatedAcY;
 	Ship();
 	Ship(int, float , float, float, float, float, float, float, float, int);
 	~Ship();

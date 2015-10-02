@@ -12,21 +12,23 @@ int main (int argc, char *argv[])
 {	
 	GameState * gamestate = new GameState();
 	PassedGSManager::Init(gamestate);
+	EstimatorManager::Init(gamestate, gamestate->myShip);
 
 	ShipNorrisMA * bot = new ShipNorrisMA();
 	
 	bot->gamestate = gamestate;
 	bot->myShip = gamestate->myShip;
 	
-	gamestate->Log("Loaded");
+	/*gamestate->Log("Loaded");*/
 	
 	while(bot->myShip != nullptr)
 	{
 		gamestate->ReadData();
 
-		stringstream ss;
-		ss << "tick -> " << gamestate->GetTick();
-		gamestate->Log(ss.str());
+		/*stringstream ss;
+		ss << "
+		 -> " << gamestate->GetTick();
+		gamestate->Log(ss.str());*/
 
 		gamestate->UpdateBeforeBot();
 		EstimatorManager::Update();

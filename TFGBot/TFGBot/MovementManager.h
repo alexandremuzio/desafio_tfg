@@ -28,10 +28,12 @@ public:
 
 	MoveAction Update();
 
+	void StopAlignAng();
 	void AlignAng(float);
 	void AlignAng(float, float);
 	void AlignVel(float);
 	void AlignVel(float, float);
+	void AlignVel(float vx, float vy, float desiredLinearVel);
 	void ApproachRect(Point*, float);
 	void ApproachRect(Point*, Point*);
 	void Dodge(GameObject*);

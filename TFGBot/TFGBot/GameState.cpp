@@ -39,13 +39,34 @@ void GameState::CloneFrom(GameState* gs) {
 	SetSideThrustFront(gs->GetSideThrustFront());
 	SetSideThrustBack(gs->GetSideThrustBack());
 	SetShoot(gs->GetShoot());
+
 	myShip->CloneFrom(gs->myShip);
+
+	/*for (map<int, Ship*>::iterator itr = ships.begin(); itr != ships.end(); itr++) {
+		itr->second->CloneFrom(gs->ships[itr->second->uid]);
+	}
+	for (map<int, Rock*>::iterator itr = rocks.begin(); itr != rocks.end(); itr++) {
+		itr->second->CloneFrom(gs->rocks[itr->second->uid]);
+	}
+	for (map<int, Laser*>::iterator itr = lasers.begin(); itr != lasers.end(); itr++) {
+		itr->second->CloneFrom(gs->lasers[itr->second->uid]);
+	}*/
 
 	// Implement others necessary clones here
 }
 
 void GameState::UpdateBeforeBot() {
-	myShip->UpdateBeforeBot();
+	for (map<int, Ship*>::iterator itr = ships.begin(); itr != ships.end(); itr++) {
+		itr->second->UpdateBeforeBot();
+	}
+
+	for (map<int, Rock*>::iterator itr = rocks.begin(); itr != rocks.end(); itr++) {
+		itr->second->UpdateBeforeBot();
+	}
+
+	for (map<int, Laser*>::iterator itr = lasers.begin(); itr != lasers.end(); itr++) {
+		itr->second->UpdateBeforeBot();
+	}
 }
 
 void GameState::ReadData() {
@@ -274,7 +295,18 @@ void GameState::PrintAction(string s) {
 
 void GameState::UpdateAfterBot() {
 	NormalizeAction();
-	myShip->UpdateAfterBot();
+
+	for (map<int, Ship*>::iterator itr = ships.begin(); itr != ships.end(); itr++) {
+		itr->second->UpdateAfterBot();
+	}
+
+	for (map<int, Rock*>::iterator itr = rocks.begin(); itr != rocks.end(); itr++) {
+		itr->second->UpdateBeforeBot();
+	}
+
+	for (map<int, Laser*>::iterator itr = lasers.begin(); itr != lasers.end(); itr++) {
+		itr->second->UpdateBeforeBot();
+	}
 }
 
 void GameState::NormalizeAction() {

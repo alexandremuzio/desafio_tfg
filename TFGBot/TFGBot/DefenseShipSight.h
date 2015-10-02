@@ -14,6 +14,7 @@ private:
 	vector<Vector2> allVelocitys;
 	GameState* gameState;
 	Ship* myShip;
+	map<int, Vector2> lastEscapeDir;
 
 public:
 	
@@ -24,6 +25,7 @@ public:
 	Vector2 GetVel();
 	bool Intersect(Ship*);
 	Vector2 GetEscapeDir(Ship*);
+	Vector2 GetEscapeDir0(Ship*);
 	float GetWeightThreat(Ship*);
 };
 

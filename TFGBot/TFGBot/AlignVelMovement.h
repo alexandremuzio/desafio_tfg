@@ -12,6 +12,7 @@ class AlignVelMovement : Movement {
 
 private:
 
+	bool oneCycleExecuted;
 	static int nStages;
 	int stage;
 	Vector2 desVel;
@@ -30,4 +31,6 @@ public:
 	MoveAction Stage0Update();
 	MoveAction Stage1Update();
 	void IncStage();
+	bool OneCycleExecuted() const { return oneCycleExecuted; }
+	void OneCycleExecuted(bool val) { oneCycleExecuted = val; }
 };

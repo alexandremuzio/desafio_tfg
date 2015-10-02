@@ -122,6 +122,18 @@
     <ClInclude Include="AttackConsts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DefeseFutureLaser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefFutureRock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenseCenter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenceOpponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BotBase.cpp">
@@ -227,6 +239,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AttackConsts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefenseFutureLaser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefFutureRock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefenseCenter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefenceOpponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -36,13 +36,34 @@ bool DefenseShipSight::Intersect(Ship* otherShip) {
 	Vector2 otherShipDir = otherShip->GetDirVec();
 	Vector2 otherShipToMyShip = Vector2(myShip->posx - otherShip->posx, myShip->posy - otherShip->posy);
 	float distOtherShipMyShip = otherShipToMyShip.Dist();
-	float radiusSum = myShip->radius + DefShipSightConsts::laserRadius;
+	float radiusSum = myShip->radius*1.5f + DefShipSightConsts::laserRadius;
 	if (distOtherShipMyShip <= radiusSum)
 		return true;
-	return abs(Vector2::Angle(otherShipToMyShip, otherShipDir)) < asin(radiusSum / distOtherShipMyShip);
+
+	bool r = abs(Vector2::Angle(otherShipToMyShip, otherShipDir)) < asin(radiusSum / distOtherShipMyShip);
+
+	if ( r == false )
+		lastEscapeDir[otherShip->uid] = GetEscapeDir0(otherShip);
+
+	return r;
 }
 
+
+
 Vector2 DefenseShipSight::GetEscapeDir(Ship* otherShip) {
+
+	Vector2 escapeDir = GetEscapeDir0(otherShip);
+
+	/*if (abs(Vector2::Angle(lastEscapeDir[otherShip->uid], escapeDir)) > MathUtils::PI / 2 * 1.5f) {
+		escapeDir = escapeDir*-1;
+	}*/
+
+	lastEscapeDir[otherShip->uid] = escapeDir;
+
+	return escapeDir; 
+}
+
+Vector2 DefenseShipSight::GetEscapeDir0(Ship* otherShip) {
 	Vector2 OtherShipToMyShip = Vector2(myShip->posx - otherShip->posx, myShip->posy - otherShip->posy);
 	Vector2 myShipToOtherShip = OtherShipToMyShip*(-1);
 	Vector2 otherShipDir = Vector2(otherShip->velx, otherShip->vely);
@@ -50,11 +71,22 @@ Vector2 DefenseShipSight::GetEscapeDir(Ship* otherShip) {
 	int sign = MathUtils::Sign(Vector2::Cross(OtherShipToMyShip, otherShipDir));
 	if (sign == 0)
 		sign = 1;
-	return myShipToOtherShip.RotatedBy(sign*(alpha + MathUtils::PI / 2));
+
+	Vector2 escapeDir = myShipToOtherShip.RotatedBy(sign*(alpha + MathUtils::PI / 2));
+
+	return escapeDir; 
 }
 
 float DefenseShipSight::GetWeightThreat(Ship* otherShip) {
 	Vector2 otherShipToMyShip = Vector2(myShip->posx - otherShip->posx, myShip->posy - otherShip->posy);
 	float distOtherShipMyShip = otherShipToMyShip.Dist();
-	return DefShipSightConsts::weightConst * otherShip->charge / pow(distOtherShipMyShip, DefShipSightConsts::distExp);
+
+	Vector2 relVel = otherShip->GetDirVec()*otherShip->charge*25.0f - myShip->GetVelVec();
+	float alpha = Vector2::Angle(otherShipToMyShip, relVel);
+	float relEscalarVel = relVel.Dist()*cos(alpha);
+	float time = distOtherShipMyShip / relEscalarVel;
+
+	time = MathUtils::Limit(time, 0.0000001f, 10000.0f);
+
+	return DefShipSightConsts::weightConst * otherShip->charge / pow(time, DefShipSightConsts::distExp);
 }

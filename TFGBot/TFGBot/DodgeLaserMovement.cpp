@@ -7,9 +7,9 @@ DodgeLaserMovement::DodgeLaserMovement() {
 }
 
 DodgeLaserMovement::DodgeLaserMovement(GameObject* go) {
-	stringstream ss;
+	/*stringstream ss;
 	ss << "Init dodge!!!";
-	PassedGSManager::Get(0)->Log(ss.str());
+	PassedGSManager::Get(0)->Log(ss.str());*/
 
 	go->GetPosVec().Print("posicao do objeto");
 	go->GetVelVec().Print("velocidade do objeto");

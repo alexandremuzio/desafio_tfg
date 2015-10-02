@@ -21,6 +21,8 @@ void ShipEstimator::EstimateVelAng(Ship* ship) {
 	ship->estimatedVelAng = ship->velAng;
 	for (int i = PassedGSManager::nStored() - 1; i >= 1; --i) {
 		if (PassedGSManager::Get(i) != nullptr) {
+			// O acAng não existe para outras naves
+
 			ship->estimatedVelAng += (PassedGSManager::Get(i)->myShip->acAng)*(PassedGSManager::Get(i)->GetTimeStep());
 			/*stringstream ss;
 			GameState* gs = PassedGSManager::Get(0);

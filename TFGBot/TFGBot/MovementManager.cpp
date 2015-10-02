@@ -28,6 +28,8 @@ MovementManager::~MovementManager() {
 
 }
 
+
+
 MoveAction MovementManager::Update() {
 	MoveAction ma;
 
@@ -44,6 +46,12 @@ MoveAction MovementManager::Update() {
 	//ma.Print();
 
 	return ma;
+}
+
+void MovementManager::StopAlignAng() {
+	if (alignAngMov != nullptr)
+		delete alignAngMov;
+	alignAngMov = nullptr;
 }
 
 // ang in rad (belong between[-PI, PI]) and in trigonometric coordinates 
@@ -63,6 +71,31 @@ void MovementManager::AlignVel(float finalVelAng) {
 	AlignVel(cos(finalVelAng), sin(finalVelAng));
 }
 
+void MovementManager::AlignVel(float vx, float vy, float desiredLinearVel) {
+	this->desiredLinearVel = desiredLinearVel;
+	lastVel = Vector2(vx, vy);
+	float v = hypot(vx, vy);
+	float k1 = desiredLinearVel / v;
+	vx *= k1;
+	vy *= k1;
+	if (desiredLinearVel > GameConst::maxLinVel) {
+		float k2 = (GameConst::maxLinVel) / desiredLinearVel;
+		vx = k2*vx;
+		vy = k2*vy;
+	}
+
+	/*if (alignVelMov != nullptr)
+		delete alignVelMov;
+		alignVelMov = new AlignVelMovement(vx, vy);*/
+
+	if (alignVelMov != nullptr && alignVelMov->OneCycleExecuted()) {
+		delete alignVelMov;
+		alignVelMov = new AlignVelMovement(vx, vy);
+	}
+	if (alignVelMov == nullptr)
+		alignVelMov = new AlignVelMovement(vx, vy);
+}
+
 void MovementManager::AlignVel(float vx, float vy) {
 	lastVel = Vector2(vx, vy);
 	float v = hypot(vx, vy);
@@ -75,9 +108,16 @@ void MovementManager::AlignVel(float vx, float vy) {
 		vy = k2*vy;
 	}
 
-	if (alignVelMov != nullptr)
+	/*if (alignVelMov != nullptr)
+	delete alignVelMov;
+	alignVelMov = new AlignVelMovement(vx, vy);*/
+
+	if (alignVelMov != nullptr && alignVelMov->OneCycleExecuted()) {
 		delete alignVelMov;
-	alignVelMov = new AlignVelMovement(vx, vy);
+		alignVelMov = new AlignVelMovement(vx, vy);
+	}
+	if (alignVelMov == nullptr)
+		alignVelMov = new AlignVelMovement(vx, vy);
 }
 
 void MovementManager::ApproachRect(Point* p, float ang) {

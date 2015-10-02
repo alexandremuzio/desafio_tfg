@@ -15,12 +15,13 @@ AlignVelMovement::AlignVelMovement() {
 AlignVelMovement::AlignVelMovement(float vx, float vy) {
 	desVel = Vector2(vx, vy);
 	stage = 0;
+	OneCycleExecuted(false);
 
-	stringstream ss;
+	/*stringstream ss;
 	ss << "init new AlignVelMovement:"<< endl;
 	ss << vx << "(vx desired)" << endl;
 	ss << vy << "(vy desired)";
-	gamestate->Log(ss.str());
+	gamestate->Log(ss.str());*/
 }
 
 AlignVelMovement::~AlignVelMovement() {
@@ -30,12 +31,26 @@ AlignVelMovement::~AlignVelMovement() {
 MoveAction AlignVelMovement::Update() {
 	MoveAction ma;
 
+	/*InitStages();
+	ma = Stage0Update();*/
+
+	/*stringstream ss;
+	ss << "stage = " << stage << endl;
+	gamestate->Log(ss.str());*/
+
 	if (stage == 0) {
 		InitStages();
 		ma = Stage0Update();
 		IncStage();
+		
 	}
 	else if (stage == 1) {
+		OneCycleExecuted(true);
+
+		/*stringstream ss;
+		ss << "call stage 1 ********************&&&"<< endl;
+		gamestate->Log(ss.str());*/
+
 		ma = Stage1Update();
 		IncStage();
 	}
@@ -53,12 +68,12 @@ void AlignVelMovement::InitStages() {
 	float k2 = 10.6370;
 
 	float x1 = myShip->velx - desVel.x;
-	float x2 = myShip->acx;
-	float newAcx = myShip->acx + gamestate->GetTimeStep()*(-k1*x1-k2*x2);
+	float x2 = myShip->estimatedAcX;
+	float newAcx = myShip->estimatedAcX + gamestate->GetTimeStep()*(-k1*x1-k2*x2);
 
 	float y1 = myShip->vely - desVel.y;
-	float y2 = myShip->acy;
-	float newAcy = myShip->acy + gamestate->GetTimeStep()*(-k1*y1 - k2*y2);
+	float y2 = myShip->estimatedAcY;
+	float newAcy = myShip->estimatedAcY + gamestate->GetTimeStep()*(-k1*y1 - k2*y2);
 
 	Vector2 ac = Vector2(newAcx, newAcy);
 	//ac.Print("new acceleration");
@@ -81,6 +96,10 @@ void AlignVelMovement::InitStages() {
 	pair<float, float> ks = ac.Decompose(myShip->GetCorrectDir(dir0), myShip->GetCorrectDir(dir1));
 	amp0 = ks.first;
 	amp1 = ks.second;
+
+	if (amp1 < 0.2f*amp0) {
+		OneCycleExecuted(true);
+	}
 }
 
 pair<Vector2, Vector2> AlignVelMovement::GetClosestVectors( const Vector2& acVec ) {
@@ -124,6 +143,11 @@ void AlignVelMovement::IncStage() {
 }
 
 MoveAction AlignVelMovement::Stage0Update() {
+	stringstream ss;
+	/*ss << amp0 << "(amp0-Stage0Update)" << endl;
+	ss << amp1 << "(amp1-Stage0Update)" << endl;*/
+	/*gamestate->Log(ss.str());*/
+
 	return MoveAction(dir0, amp0);
 }
 

@@ -53,20 +53,28 @@ void ShipNorrisMA::Process() {
 	}
 	else {
 		Vector2 v = def->GetVel();
+
+		if (v.Dist() < 10000.0f)
+			v.SetLength(v.Dist()*0.2f);
+
 		v.ValidVel();
-		movManager->SetDesiredLinearVel(v.Dist());
-		movManager->AlignVel(v.x, v.y);
+		movManager->AlignVel(v.x, v.y, v.Dist());
 
 		pair<float, int> angShoot = atk->GetAngShoot();
-		movManager->AlignAng(angShoot.first);
+			movManager->AlignAng(angShoot.first);
 
 		MoveAction ma = movManager->Update();
 
 		thrust = ma.thrust;
 		sideThrustFront = ma.sideThrustFront;
 		sideThrustBack = ma.sideThrustBack;
-		shoot = angShoot.second;
+		shoot = myShip->charge >= 2 ? angShoot.second : 0;
 	}
+
+	//stringstream ss;
+	//ss << "gamestate->arenaRadius = " << gamestate->arenaRadius << endl;
+	//ss << "myShip->radius = " << myShip->radius << endl;
+	//gamestate->Log(ss.str());
 
 	/*CheckDodge();*/
 
@@ -76,7 +84,7 @@ void ShipNorrisMA::Process() {
 	ss << myShip->ang << "(ang)" << endl;
 	ss << myShip->velx << "(velx)" << endl;
 	ss << myShip->vely << "(vely)";
-	gamestate->Log(ss.str());*/
+	gamestate->ScenarioSwitch.Current.type(ss.str());*/
 
 	//ma.Print();
 }
